@@ -7,20 +7,59 @@
   <div layout:fragment="content">
     <div class="container-fluid">
       <h1 class="mt-4">Board List</h1>
-      <p>
-        The starting state of the menu will appear collapsed on smaller screens,
-        and will appear non-collapsed on larger screens. When toggled using the
-        button below, the menu will change.
-      </p>
-      <p>
-        Make sure to keep all page content within the
-        <code>#page-content-wrapper</code>
-        . The top navbar is optional, and just for demonstration. Just create an
-        element with the
-        <code>#sidebarToggle</code>
-        ID which will toggle the menu when clicked.
-      </p>
+      <!-- BNO, TITLE, CREATED_DATE, NAME, REPLYCNT -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성일</th>
+            <th scope="col">작성자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="board : ${result.dtoList}">
+            <th scope="row" th:text="${board.bno}"></th>
+            <td>
+              <a th:href="@{read(bno=${board.bno})}">[[${board.title}]]</a>
+              ----------- [[${board.replyCount!=null?board.replyCount:0}]]
+            </td>
+            <td
+              th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd')}"
+            ></td>
+            <td th:text="${board.name}"></td>
+          </tr>
+        </tbody>
+      </table>
+      <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:if="${result.prev}">
+            <a
+              class="page-link"
+              th:href="@{list(page=${result.prevPage},size=${result.pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
+              >Previous</a
+            >
+          </li>
+          <li
+            th:class="'page-item ' + ${result.current == page ?'active': ''}"
+            th:each="page : ${result.pageNumList}"
+          >
+            <a
+              class="page-link"
+              th:href="@{list(page=${page},size=${result.pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
+              >[[${page}]]</a
+            >
+          </li>
+          <li class="page-item" th:if="${result.next}">
+            <a
+              class="page-link"
+              th:href="@{list(page=${result.nextPage},size=${result.pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
-  <th:block layout:fragment="script"></th:block>
+  <th:block layout:fragment="script"> </th:block>
 </html>
