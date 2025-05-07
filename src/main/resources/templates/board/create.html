@@ -6,19 +6,9 @@
   </th:block>
   <div layout:fragment="content">
     <div class="container-fluid">
-      <h1 class="mt-4">Board Read</h1>
-      <form>
-        <div class="mb-3">
-          <label for="bno" class="form-label">번호</label>
-          <input
-            type="text"
-            class="form-control"
-            id="bno"
-            name="bno"
-            th:value="${dto.bno}"
-            readonly
-          />
-        </div>
+      <h1 class="mt-4">Board Create</h1>
+      <!-- type : email, search, url, tel => 자동검증 대상 -->
+      <form method="post" th:object="${dto}" novalidate>
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
           <input
@@ -27,20 +17,38 @@
             id="title"
             name="title"
             th:value="${dto.title}"
-            readonly
           />
+          <div
+            th:if="${#fields.hasErrors('title')}"
+            th:errors="*{title}"
+            class="text-danger"
+          ></div>
         </div>
         <div class="mb-3">
           <label for="content" class="form-label">내용</label>
-          <textarea
-            name="content"
-            id="content"
-            rows="10"
+          <textarea name="content" id="content" rows="10" class="form-control">
+          [[${dto.content}]]</textarea
+          >
+          <div
+            th:if="${#fields.hasErrors('content')}"
+            th:errors="*{content}"
+            class="text-danger"
+          ></div>
+        </div>
+        <div class="mb-3">
+          <label for="bno" class="form-label">이메일</label>
+          <input
+            type="email"
             class="form-control"
-            readonly
-          >
-[[${dto.content}]]</textarea
-          >
+            id="email"
+            name="email"
+            th:value="${dto.bno}"
+          />
+          <div
+            th:if="${#fields.hasErrors('email')}"
+            th:errors="*{email}"
+            class="text-danger"
+          ></div>
         </div>
         <div class="mb-3">
           <label for="name" class="form-abel">작성자</label>
@@ -50,14 +58,9 @@
             id="name"
             name="name"
             th:value="${dto.name}"
-            readonly
           />
         </div>
-        <a
-          class="btn btn-primary"
-          th:href="@{modify(bno=${dto.bno},page=${pageRequestDTO.page},size=${pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"
-          >수정</a
-        >
+        <button class="btn btn-primary" type="submit">추가</button>
         <a
           class="btn btn-success"
           th:href="@{list(page=${pageRequestDTO.page},size=${pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"

@@ -17,14 +17,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString(exclude = { "member", "replies" })
-@Setter
 @Getter
 @Table(name = "Boardtbl")
 @Entity
@@ -48,4 +46,12 @@ public class Board extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "board")
     private List<Reply> replies = new ArrayList<>();
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
 }

@@ -13,6 +13,7 @@ import com.example.board.entity.Board;
 import com.example.board.entity.QBoard;
 import com.example.board.entity.QMember;
 import com.example.board.entity.QReply;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -30,7 +31,7 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Page<Object[]> list(Pageable pageable) {
+    public Page<Object[]> list(String type, String keyword, Pageable pageable) {
         log.info("SearchBoard");
 
         QBoard board = QBoard.board;
@@ -52,6 +53,27 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
         log.info(query);
         log.info("===============");
 
+        // id > 0
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(board.bno.gt(0L));
+
+        if (type != null) {
+            // 검색
+            BooleanBuilder builder = new BooleanBuilder();
+            if (type.contains("t")) {
+                builder.or(board.title.contains(keyword));
+            }
+            if (type.contains("c")) {
+                builder.or(board.content.contains(keyword));
+            }
+            if (type.contains("w")) {
+                builder.or(board.member.name.contains(keyword));
+            }
+            booleanBuilder.and(builder);
+        }
+
+        tuple.where(booleanBuilder);
+
         // Sort 생성
         Sort sort = pageable.getSort();
         sort.stream().forEach(order -> {
@@ -64,6 +86,7 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
 
         // 전체 리스트 + Sort 적용
 
+        // 페이지 처리
         tuple.offset(pageable.getOffset());
         // 10
         tuple.limit(pageable.getPageSize());
