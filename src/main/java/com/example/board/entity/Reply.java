@@ -12,14 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "board")
-@Setter
 @Getter
 @Entity
 public class Reply extends BaseEntity {
@@ -37,4 +35,8 @@ public class Reply extends BaseEntity {
     @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
+
+    public void changeText(String text) {
+        this.text = text;
+    }
 }
