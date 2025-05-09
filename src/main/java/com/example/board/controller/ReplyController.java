@@ -31,8 +31,7 @@ public class ReplyController {
     @PostMapping("/new")
     public Long postCreate(@RequestBody ReplyDTO dto) {
         log.info("bno 댓글 삽입 {}", dto);
-        Long rno = replyService.create(dto);
-        return rno;
+        return replyService.create(dto);
     }
 
     @GetMapping("/board/{bno}")
