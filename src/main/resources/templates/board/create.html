@@ -8,7 +8,12 @@
     <div class="container-fluid">
       <h1 class="mt-4">Board Create</h1>
       <!-- type : email, search, url, tel => 자동검증 대상 -->
-      <form method="post" th:object="${dto}" novalidate>
+      <form
+        method="post"
+        th:object="${dto}"
+        novalidate
+        th:action="@{/board/create}"
+      >
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
           <input
@@ -36,19 +41,13 @@
           ></div>
         </div>
         <div class="mb-3">
-          <label for="bno" class="form-label">이메일</label>
           <input
-            type="email"
+            type="hidden"
             class="form-control"
             id="email"
             name="email"
-            th:value="${dto.bno}"
+            th:value="${#authentication.name}"
           />
-          <div
-            th:if="${#fields.hasErrors('email')}"
-            th:errors="*{email}"
-            class="text-danger"
-          ></div>
         </div>
         <div class="mb-3">
           <label for="name" class="form-abel">작성자</label>
@@ -57,7 +56,7 @@
             class="form-control"
             id="name"
             name="name"
-            th:value="${dto.name}"
+            th:value="${#authentication.principal.name}"
           />
         </div>
         <button class="btn btn-primary" type="submit">추가</button>

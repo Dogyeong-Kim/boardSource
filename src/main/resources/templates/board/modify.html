@@ -7,7 +7,7 @@
   <div layout:fragment="content">
     <div class="container-fluid">
       <h1 class="mt-4">Board Modify</h1>
-      <form method="post">
+      <form method="post" th:action="@{/board/modify}">
         <div class="mb-3">
           <label for="bno" class="form-label">번호</label>
           <input
@@ -46,7 +46,20 @@
             readonly
           />
         </div>
-        <button type="submit" class="btn btn-primary">수정</button>
+        <input
+          type="hidden"
+          class="form-control"
+          id="email"
+          name="email"
+          th:value="${#authentication.name}"
+        />
+        <button
+          type="submit"
+          class="btn btn-primary"
+          th:if="${#authentication.name} == ${dto.email}"
+        >
+          수정
+        </button>
         <a
           class="btn btn-success"
           th:href="@{list(page=${pageRequestDTO.page},size=${pageRequestDTO.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}"

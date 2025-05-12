@@ -2,6 +2,7 @@ package com.example.board.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,15 +33,17 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public void getCreate(@ModelAttribute("dto") BoardDTO dto, PageRequestDTO pageRequestDTO) {
         log.info("글 작성 폼 요청");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     public String postCreate(@ModelAttribute("dto") @Valid BoardDTO dto, BindingResult result,
             PageRequestDTO pageRequestDTO, RedirectAttributes rttr) {
-        log.info("글 작상 요청 {}", dto);
+        log.info("글 작성 요청 {}", dto);
 
         // 유효성 검증 후 결과 확인
         if (result.hasErrors()) {
@@ -72,6 +75,7 @@ public class BoardController {
         model.addAttribute("dto", dto);
     }
 
+    @PreAuthorize("authentication.name == #dto.email")
     @PostMapping("/modify")
     public String postMethodName(BoardDTO dto, PageRequestDTO pageRequestDTO, RedirectAttributes rttr) {
         log.info("수정 {} {}", dto, pageRequestDTO);
