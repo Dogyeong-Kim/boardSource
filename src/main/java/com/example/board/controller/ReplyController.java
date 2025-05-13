@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class ReplyController {
 
     private final ReplyService replyService;
 
+    @PreAuthorize("isAuthenticated")
     @PostMapping("/new")
     public Long postCreate(@RequestBody ReplyDTO dto) {
         log.info("bno 댓글 삽입 {}", dto);
@@ -46,15 +48,17 @@ public class ReplyController {
         return replyService.get(rno);
     }
 
+    @PreAuthorize("authentication.name == #dto.replyerEmail")
     @PutMapping("/{rno}")
     public Long putReply(@PathVariable Long rno, @RequestBody ReplyDTO dto) {
         log.info("dto 요청 {}", dto);
         return replyService.update(dto);
     }
 
+    @PreAuthorize("authentication.name == #dto.replyerEmail")
     @DeleteMapping("/{rno}")
-    public Long deleteReply(@PathVariable Long rno) {
-        log.info("delete 요청 {}", rno);
+    public Long deleteReply(@PathVariable Long rno, @RequestBody ReplyDTO dto) {
+        log.info("delete 요청 {} {}", rno, dto);
         replyService.delete(rno);
         return rno;
     }
